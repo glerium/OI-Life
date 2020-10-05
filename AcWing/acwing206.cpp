@@ -1,4 +1,4 @@
-//鐭冲ご娓告垙--鐭╅樀蹇�熷箓 
+//石头游戏--矩阵快速幂 
 #include <cstdio>
 #include <cstring>
 #include <cctype>
