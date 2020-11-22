@@ -25,7 +25,6 @@ int main(){
 		int ab=x12+a12*2,
 			ac=x13+a13*2,
 			bc=x23+a23*2;
-//		printf("%d %d %d\n",ab,ac,bc);
 		a[1]=(ab+ac-bc)/2;
 		a[2]=(ab+bc-ac)/2;
 		a[3]=(ac+bc-ab)/2;
