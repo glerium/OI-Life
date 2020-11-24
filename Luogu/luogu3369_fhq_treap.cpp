@@ -14,49 +14,84 @@ template<typename T>void write(T x){
 }
 struct Treap{
 private:
-	int _nxt=0,root=0;
+	int _nxt=19371,root=0;
 	int rand(){
-		_nxt=(_nxt*23333ll+99999)%1000000007;
+		_nxt=(_nxt*23333ll+99999)%1000007;
 		return _nxt;
 	}
 public:
 	static const int maxn=1e6+10;
-	int val[maxn],son[maxn][2],idx,sz[maxn],ct[maxn],w[maxn];
+	int val[maxn],son[maxn][2],idx,sz[maxn],w[maxn];
 	int new_node(int v){
 		int x=++idx;
 		val[x]=v;
-		sz[x]=ct[x]=1;
+		sz[x]=1;
 		son[x][0]=son[x][1]=0;
 		w[x]=Treap::rand();
 		return x;
 	}
+	void update(int x){
+		sz[x]=sz[son[x][0]]+sz[son[x][1]]+1;
+	}
 	void split(int x,int &a,int &b,int v){
-		
+		if(!x){
+			a=0,b=0;
+			return;
+		}
+		if(val[x]<=v) a=x,split(son[x][1],son[x][1],b,v);
+		else b=x,split(son[x][0],a,son[x][0],v);
+		update(x);
 	}
 	void merge(int &x,int a,int b){
-		
+		if(!a||!b){
+			x=a+b;
+			return;
+		}
+		if(w[a]<w[b]) x=a,merge(son[x][1],son[a][1],b);
+		else x=b,merge(son[x][0],a,son[b][0]);
+		update(x);
 	}
-	void update(int x){
-		
+	int xrank(int x,int v){
+		if(sz[son[x][0]]+1==v) return val[x];
+		if(sz[son[x][0]]>=v) return xrank(son[x][0],v);
+		else return xrank(son[x][1],v-sz[son[x][0]]-1);
 	}
-	int gval(int x,int v){
-		
-	}
-	int find(int v){return gval(root,v);}
+	int find(int v){return xrank(root,v);}
 	void insert(int v){
-		
+		int in=new_node(v),x,y;
+		split(root,x,y,v);
+		merge(x,x,in);
+		merge(root,x,y);
+		update(root);
 	}
 	void erase(int v){
-		
+		int x,y,z;
+		split(root,x,y,v);
+		split(x,x,z,v-1);
+		merge(z,z[son][0],z[son][1]);
+		merge(x,x,z);
+		merge(root,x,y);
 	}
 	int rank(int v){
-		
+		int x,y,ans;
+		split(root,x,y,v-1);
+		ans=sz[x]+1;
+		merge(root,x,y);
+		return ans;
 	}
 	int pre(int v){
-		
+		int x,y,ans;
+		split(root,x,y,v-1);
+		ans=xrank(x,sz[x]);
+		merge(root,x,y);
+		return ans;
 	}
 	int suc(int v){
-		
+		int x,y,ans;
+		split(root,x,y,v);
+		ans=xrank(y,1);
+		merge(root,x,y);
+		return ans;
 	}
 }t;
 int main(){
