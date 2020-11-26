@@ -62,7 +62,6 @@ public:
 		split(root,x,y,v);
 		merge(x,x,in);
 		merge(root,x,y);
-		update(root);
 	}
 	void erase(int v){
 		int x,y,z;
