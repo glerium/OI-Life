@@ -2,21 +2,31 @@
 #include <algorithm>
 using namespace std;
 const int maxn=1e5+10;
-int n,m,t[12],ct,ans;
+int n,m,t[50],ct,ans;
 struct Action{
 	int op,t;	//1:AND, 2:OR, 3:XOR
 }a[maxn];
 int solve(int dep,int x){
-	
+	int ret=x;
+	for(int i=1;i<=n;i++){
+		if(a[i].op==1) ret&=(a[i].t>>(dep-1))&1;
+		else if(a[i].op==2) ret|=(a[i].t>>(dep-1))&1;
+		else ret^=(a[i].t>>(dep-1))&1;
+	}
+	return ret;
 }
 void dfs(int dep,bool full){
-	int a[2],up=full?t[dep]:1;
-	
+	if(!dep) return;
+	int up=full?t[dep]:1,r[2]={-1,-1};
+	for(int i=0;i<=up;i++) r[i]=solve(dep,i);
+	ans+=max(r[0],r[1])<<(dep-1);
+	if(!full) dfs(dep-1,false);
+	else dfs(dep-1,t[dep]?r[1]>r[0]:true);
 }
 int main(){
 	scanf("%d%d",&n,&m);
 	{
-		char op[3]; int t;
+		char op[5]; int t;
 		for(int i=1;i<=n;i++){
 			scanf("%s%d",op,&t);
 			if(op[0]=='A') a[i].op=1;
@@ -26,10 +36,11 @@ int main(){
 		}
 	}
 	while(m){
-		t[++ct]=m%10;
-		m/=10;
+		t[++ct]=m&1;
+		m>>=1;
 	}
-	dfs(ct,false);
+	while(ct<30) t[++ct]=0;
+	dfs(ct,true);
 	printf("%d\n",ans);
 	return 0; 
 }
